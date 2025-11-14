@@ -57,6 +57,17 @@ def job_skill_req_to_dict(jsr: JobSkillRequirement):
         "min_level": jsr.level_required,  # 👈 usamos el campo real del modelo
     }
 
+# Helper para convertir niveles de texto a un orden numérico
+LEVEL_ORDER = {
+    "beginner": 1,
+    "junior": 1,
+    "intermediate": 2,
+    "mid": 2,
+    "advanced": 3,
+    "senior": 3,
+}
+
+
 
 # =========================
 # CRUD de Users
@@ -397,3 +408,84 @@ def delete_job_skill_requirement(jsr_id):
     db.session.delete(jsr)
     db.session.commit()
     return jsonify({"status": "deleted", "id": jsr_id})
+
+# =========================
+# MATCH: usuario vs oferta
+# =========================
+
+@api_bp.route("/match/user/<int:user_id>/job_offer/<int:offer_id>", methods=["GET"])
+def match_user_job_offer(user_id, offer_id):
+    # 1) Traer usuario y oferta
+    user = User.query.get(user_id)
+    offer = JobOffer.query.get(offer_id)
+
+    if user is None:
+        return jsonify({"error": "user not found"}), 404
+    if offer is None:
+        return jsonify({"error": "job offer not found"}), 404
+
+    # 2) Traer skills del usuario
+    user_skills = UserSkill.query.filter_by(user_id=user_id).all()
+    user_skills_by_id = {us.skill_id: us for us in user_skills}
+
+    # 3) Traer requisitos de la oferta
+    reqs = JobSkillRequirement.query.filter_by(job_offer_id=offer_id).all()
+
+    if not reqs:
+        return jsonify({
+            "user_id": user_id,
+            "job_offer_id": offer_id,
+            "compatibility": 0,
+            "reason": "La oferta no tiene requisitos de skills definidos",
+            "matched_skills": [],
+            "missing_skills": []
+        })
+
+    total_reqs = len(reqs)
+    matched_count = 0
+    matched_skills = []
+    missing_skills = []
+
+    for req in reqs:
+        user_skill = user_skills_by_id.get(req.skill_id)
+
+        if not user_skill:
+            # El usuario no tiene esta skill
+            missing_skills.append({
+                "skill_id": req.skill_id,
+                "required_min_level": req.level_required,
+                "reason": "user_missing_skill",
+            })
+            continue
+
+        # Comparar niveles
+        user_level_num = LEVEL_ORDER.get(user_skill.level.lower(), 0)
+        required_level_num = LEVEL_ORDER.get(req.level_required.lower(), 0)
+
+        if user_level_num >= required_level_num:
+            matched_count += 1
+            matched_skills.append({
+                "skill_id": req.skill_id,
+                "user_level": user_skill.level,
+                "required_min_level": req.level_required,
+                "status": "ok",
+            })
+        else:
+            missing_skills.append({
+                "skill_id": req.skill_id,
+                "user_level": user_skill.level,
+                "required_min_level": req.level_required,
+                "reason": "level_too_low",
+            })
+
+    compatibility = int((matched_count / total_reqs) * 100)
+
+    return jsonify({
+        "user_id": user_id,
+        "job_offer_id": offer_id,
+        "compatibility": compatibility,
+        "matched_skills": matched_skills,
+        "missing_skills": missing_skills,
+        "total_requirements": total_reqs,
+        "matched_requirements": matched_count,
+    })
