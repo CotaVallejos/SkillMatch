@@ -10,7 +10,7 @@ def api_health():
     return jsonify({"status": "ok", "message": "API SkillMatch lista ✅"})
 
 from flask import request
-from .models import User, Skill, JobOffer, UserSkill
+from .models import User, Skill, JobOffer, UserSkill, JobSkillRequirement
 from . import db
 
 
@@ -48,6 +48,15 @@ def user_skill_to_dict(us: UserSkill):
         "skill_id": us.skill_id,
         "level": us.level,
     }
+
+def job_skill_req_to_dict(jsr: JobSkillRequirement):
+    return {
+        "id": jsr.id,
+        "job_offer_id": jsr.job_offer_id,
+        "skill_id": jsr.skill_id,
+        "min_level": jsr.level_required,  # 👈 usamos el campo real del modelo
+    }
+
 
 # =========================
 # CRUD de Users
@@ -316,3 +325,75 @@ def delete_user_skill(user_skill_id):
     db.session.delete(us)
     db.session.commit()
     return jsonify({"status": "deleted", "id": user_skill_id})
+
+# =========================
+# CRUD de JobSkillRequirements
+# =========================
+
+# GET /api/job_skill_requirements → lista todo
+@api_bp.route("/job_skill_requirements", methods=["GET"])
+def list_job_skill_requirements():
+    items = JobSkillRequirement.query.order_by(JobSkillRequirement.id).all()
+    return jsonify([job_skill_req_to_dict(i) for i in items])
+
+
+# POST /api/job_skill_requirements → crear requisito
+@api_bp.route("/job_skill_requirements", methods=["POST"])
+def create_job_skill_requirement():
+    data = request.get_json() or {}
+
+    job_offer_id = data.get("job_offer_id")
+    skill_id = data.get("skill_id")
+    min_level = data.get("min_level")
+
+    if not job_offer_id or not skill_id or not min_level:
+        return jsonify({"error": "job_offer_id, skill_id y min_level son obligatorios"}), 400
+
+    jsr = JobSkillRequirement(
+        job_offer_id=job_offer_id,
+        skill_id=skill_id,
+        level_required=min_level,  # 👈 nombre correcto del campo
+    )
+
+
+    db.session.add(jsr)
+    db.session.commit()
+
+    return jsonify(job_skill_req_to_dict(jsr)), 201
+
+
+# GET /api/job_skill_requirements/<id> → obtener por id
+@api_bp.route("/job_skill_requirements/<int:jsr_id>", methods=["GET"])
+def get_job_skill_requirement(jsr_id):
+    jsr = JobSkillRequirement.query.get(jsr_id)
+    if jsr is None:
+        return jsonify({"error": "job_skill_requirement not found"}), 404
+    return jsonify(job_skill_req_to_dict(jsr))
+
+
+# PUT /api/job_skill_requirements/<id> → actualizar
+@api_bp.route("/job_skill_requirements/<int:jsr_id>", methods=["PUT"])
+def update_job_skill_requirement(jsr_id):
+    jsr = JobSkillRequirement.query.get(jsr_id)
+    if jsr is None:
+        return jsonify({"error": "job_skill_requirement not found"}), 404
+
+    data = request.get_json() or {}
+
+    jsr.level_required = data.get("min_level", jsr.level_required)
+
+
+    db.session.commit()
+    return jsonify(job_skill_req_to_dict(jsr))
+
+
+# DELETE /api/job_skill_requirements/<id> → borrar
+@api_bp.route("/job_skill_requirements/<int:jsr_id>", methods=["DELETE"])
+def delete_job_skill_requirement(jsr_id):
+    jsr = JobSkillRequirement.query.get(jsr_id)
+    if jsr is None:
+        return jsonify({"error": "job_skill_requirement not found"}), 404
+
+    db.session.delete(jsr)
+    db.session.commit()
+    return jsonify({"status": "deleted", "id": jsr_id})
