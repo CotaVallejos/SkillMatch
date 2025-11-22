@@ -1,4 +1,4 @@
-🌸 SkillMatch
+# 🌸 SkillMatch
 
 Encuentra el rol que busca tus skills.
 
@@ -12,7 +12,7 @@ Encuentra el rol que busca tus skills.
 
 ⸻
 
-🌿 ¿Qué es SkillMatch?
+## 🌿 ¿Qué es SkillMatch?
 
 SkillMatch es una aplicación pensada para quienes están en reconversión laboral y quieren entender qué tan cerca están de distintos roles.
 
@@ -26,7 +26,7 @@ Todo en una interfaz sencilla, suave y sin distracciones ✨
 
 ⸻
 
-🧁 Características principales
+## 🧁 Características principales
 
 👤 Perfil
 	•	Nombre, email e ID
@@ -50,7 +50,7 @@ Todo en una interfaz sencilla, suave y sin distracciones ✨
 
 ⸻
 
-🧩 Arquitectura
+## 🧩 Arquitectura
 Backend — Flask (Python) + SQLAlchemy + PostgreSQL
 Frontend — HTML + CSS + JavaScript
 
@@ -58,7 +58,7 @@ Todo conectado con una API REST creada desde cero, pensada para ser simple, clar
 
 ⸻
 
-🎨 Tecnologías
+## 🎨 Tecnologías
 Área            Stack
 Backend         Python · Flask · SQLAlchemy · Flask-Migrate
 Frontend        HTML5 · CSS3 · JavaScript Vanilla
@@ -68,7 +68,7 @@ Otros           Fetch API · Entorno virtual con venv
 
 ⸻
 
-🪄 Instalación
+## 🪄 Instalación
 
 1. Clonar el repositorio
 git clone https://github.com/tu-usuario/skillmatch.git
@@ -85,17 +85,17 @@ pip install -r requirements.txt
 Para ejecutar el proyecto necesitas un archivo .env con tus credenciales locales.
 Este repositorio incluye un archivo .env.example con un ejemplo listo para copiar.
 
-# 1. Copiar archivo de ejemplo
+**1. Copiar archivo de ejemplo**
 
 cp .env.example .env
 
-# 2. Editar .env con tus credenciales
+**2. Editar .env con tus credenciales**
 
-# Reemplaza TU_PASSWORD por la contraseña real de tu usuario Postgres
+**Reemplaza TU_PASSWORD por la contraseña real de tu usuario Postgres**
 
 DATABASE_URL=postgresql+psycopg2://postgres:TU_PASSWORD@localhost:5432/skillmatch
 
-# Ambiente y clave secreta
+**Ambiente y clave secreta**
 
 FLASK_ENV=development
 FLASK_APP=app:create_app
@@ -119,7 +119,7 @@ frontend/index.html
 
 ⸻
 
-📊 ¿Cómo se calcula el match?
+## 📊 ¿Cómo se calcula el match?
 
 El backend compara:
 ✔️ Skills requeridas por la oferta
@@ -138,7 +138,7 @@ Minimal, claro y útil ✨
 
 ⸻
 
-🌱 Roadmap futuro
+## 🌱 Roadmap futuro
 	•	Login real
 	•	Base de datos remota
 	•	Dashboard para empresas
@@ -149,7 +149,7 @@ Minimal, claro y útil ✨
 
 ⸻
 
-🫶 Autora
+## 🫶 Autora
 
 Constanza Vallejos
 Product Manager · Scrum Product Owner certificada
@@ -157,6 +157,6 @@ Bootcamp Latinas in Cloud de Python · Cohorte 2025
 
 ⸻
 
-🍃 Licencia
+## 🍃 Licencia
 
 MIT — úsalo, modifícalo, inspírate.
