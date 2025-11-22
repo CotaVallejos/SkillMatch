@@ -86,13 +86,17 @@ Para ejecutar el proyecto necesitas un archivo .env con tus credenciales locales
 Este repositorio incluye un archivo .env.example con un ejemplo listo para copiar.
 
 # 1. Copiar archivo de ejemplo
+
 cp .env.example .env
 
 # 2. Editar .env con tus credenciales
+
 # Reemplaza TU_PASSWORD por la contraseña real de tu usuario Postgres
+
 DATABASE_URL=postgresql+psycopg2://postgres:TU_PASSWORD@localhost:5432/skillmatch
 
 # Ambiente y clave secreta
+
 FLASK_ENV=development
 FLASK_APP=app:create_app
 SECRET_KEY=dev-secret
