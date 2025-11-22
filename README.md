@@ -14,7 +14,7 @@ Encuentra el rol que busca tus skills.
 
 🌿 ¿Qué es SkillMatch?
 
-SkillMatch es una aplicación pensada para quienes están en reconversión laboral y quieren entender qué tan cerca están de distintos roles del mercado tech.
+SkillMatch es una aplicación pensada para quienes están en reconversión laboral y quieren entender qué tan cerca están de distintos roles.
 
 Ayuda a:
 	•	visualizar tus skills actuales
@@ -51,8 +51,8 @@ Todo en una interfaz sencilla, suave y sin distracciones ✨
 ⸻
 
 🧩 Arquitectura
-Backend — Flask + SQLAlchemy + SQLite
-Frontend — HTML + CSS + JS
+Backend — Flask (Python) + SQLAlchemy + PostgreSQL
+Frontend — HTML + CSS + JavaScript
 
 Todo conectado con una API REST creada desde cero, pensada para ser simple, clara y extensible.
 
@@ -62,7 +62,7 @@ Todo conectado con una API REST creada desde cero, pensada para ser simple, clar
 Área            Stack
 Backend         Python · Flask · SQLAlchemy · Flask-Migrate
 Frontend        HTML5 · CSS3 · JavaScript Vanilla
-Base de datos   SQLite
+Base de datos   PostgreSQL
 Otros           Fetch API · Entorno virtual con venv
 
 
@@ -70,21 +70,46 @@ Otros           Fetch API · Entorno virtual con venv
 
 🪄 Instalación
 
-1. Clonar
+1. Clonar el repositorio
 git clone https://github.com/tu-usuario/skillmatch.git
 cd skillmatch
 
-2. Crear entorno
+2. Crear y activar entorno virtual
 python3 -m venv .venv
 source .venv/bin/activate
 
 3. Instalar dependencias
 pip install -r requirements.txt
 
-4. Correr backend
+4. Configurar variables de entorno
+Para ejecutar el proyecto necesitas un archivo .env con tus credenciales locales.
+Este repositorio incluye un archivo .env.example con un ejemplo listo para copiar.
+
+# 1. Copiar archivo de ejemplo
+cp .env.example .env
+
+# 2. Editar .env con tus credenciales
+# Reemplaza TU_PASSWORD por la contraseña real de tu usuario Postgres
+DATABASE_URL=postgresql+psycopg2://postgres:TU_PASSWORD@localhost:5432/skillmatch
+
+# Ambiente y clave secreta
+FLASK_ENV=development
+FLASK_APP=app:create_app
+SECRET_KEY=dev-secret
+
+5. Crear base de datos en PostgreSQL
+
+En psql o pgAdmin:
+CREATE DATABASE skillmatch;
+
+Luego aplicar migraciones:
+flask db upgrade
+
+6. Correr backend
 flask --app app run
 
-5. Abrir frontend
+7. Abrir frontend
+Solo abre este archivo en tu navegador:
 frontend/index.html
 
 
